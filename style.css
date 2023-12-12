@@ -180,7 +180,6 @@ margin-top: 10px;
     
 }
 li{
-   
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
@@ -188,9 +187,28 @@ li{
     line-height: 28px;
     list-style-type: none;
 }
+/* .list-items{
+
+
+} */
+.list-item{
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 30px;
+    height: 30px;
+     font-family: 'Roboto';
+     font-style: normal;
+     font-weight: 400;
+     font-size: 24px;
+     line-height: 28px;
+     list-style-type: none;
+}
 .close-list{
-    width:10px;
-    padding-left:120px;
+    width:20px;
+    height: 20px;
+    align-items: center;
 }
 .wrapper-weather_container{
     display: grid;

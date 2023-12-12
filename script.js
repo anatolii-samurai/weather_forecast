@@ -1,3 +1,4 @@
+import { getLastCity,setLastCity,getLocationFromStorage,setterStorage } from "./local-storage.js";
 
 const addCity = document.querySelector('.searching');
 const searchName = document.querySelector('.search');
@@ -15,8 +16,23 @@ const listItem = document.querySelector('.list-items')
 
 
 
-async function f(url) {
-    try {
+window.addEventListener('load', function (e) {
+	const lastCity = getLastCity();
+	if (lastCity) {
+		searchName.value = lastCity;
+		addCityInput()
+	}
+});
+const listLocation = getLocationFromStorage();
+    
+    heart.addEventListener('click',(e)=>{
+        e.preventDefault(); 
+        addFavouriteCity()
+    }) 
+
+
+async function f(url) { 
+    try { 
         let response = await fetch(url);
         let json = await response.json();
         const sunriseTime = new Date(json.sys.sunrise * 1000);
@@ -35,43 +51,59 @@ async function f(url) {
             cloud:json.clouds.all,
             id:Math.floor(Math.random() * 100),
         }
-        addCityWearther(list)  
-        heart.addEventListener('click',(e)=>{
-            e.preventDefault(); 
-            saveLocal(list) 
-            addFavourite(list)
-            searchName.value = '';          
-    }) 
+        addCityWearther(list) ;  
     } catch (error) {
         console.log(error);
     } 
 }
 
-function addFavourite(list){
-            const item = document.createElement('li');
-            item.className = 'list-item'
-            item.textContent = `${list.name}`;
-            listItem.insertBefore(item,listItem.firstChild);
-            const closeList = document.createElement('img');
-            closeList.src='./img/icon-close.png';
-            closeList.classList.add('close-list');
-            item.append(closeList);
-            closeList.addEventListener('click',(e)=>{
-                e.preventDefault()
-                    item.closest('li').remove()
-            })  
-            
+   
+    
+    // const cityLocation = getLocationFromStorage(); 
+    render(listLocation)
+function render(listLocation)  {
+    listItem.replaceChildren();
+   for(let i=0;i<listLocation.length;i++){
+    const item = document.createElement('li');           
+    item.className = 'list-item';
+    listItem.insertBefore(item,listItem.firstChild);
+    const itemText = document.createElement('p')
+    itemText.textContent =listLocation[i] ;
+    
+    item.append(itemText);
+    const closeList = document.createElement('button');
+    closeList.innerHTML = '&times';
+    // closeList.src='./img/icon-close.png';
+    closeList.classList.add('close-list');
+    item.append(closeList);
+    
+    closeList.addEventListener('click',(e)=>{    
+        item.closest('li').remove()
+            const oneElement = 1;
+            const locationName = e.target.previousElementSibling;
+            const elementPosition = listLocation.indexOf(locationName.textContent);
+            listLocation.splice(elementPosition, oneElement);
+            setterStorage(listLocation)
+            render(listLocation);
+    })  
+    itemText.addEventListener('click', ()=>{
+        const serverUrl = 'http://api.openweathermap.org/data/2.5/weather';
+        let cityName = itemText.textContent;
+        const apiKey = '778ffae0d51392358c4468ba67db913f'; 
+        const url = `${serverUrl}?q=${cityName}&appid=${apiKey}&units=metric&lang={ru}`;
+        f(url) 
+    })
+   } 
+}  
+
+function addFavouriteCity(){
+    if (listLocation.includes(city.textContent)) return;
+    listLocation.push(city.textContent);
+    setterStorage(listLocation);
+    render(listLocation);           
 }
 
-    function saveLocal(city){
-        let data = localStorage.getItem('favouriteCity');
-        let favouriteCity = [];
-        if(data !== '' && data !== null){
-            favouriteCity = JSON.parse(data)
-        }
-        favouriteCity.push(city);
-        localStorage.setItem('favouriteCity',JSON.stringify(favouriteCity))
-}
+
 function addCityWearther(item){
         
         city.textContent = `${item.name}`;
@@ -84,49 +116,28 @@ function addCityWearther(item){
         forecastSunset.textContent =  `${item.sunset}`;
         cloud.innerHTML = `<img src="img/${item.icon}.png" class = "img-cloud" alt="cloud">`
         forecastCloud.textContent = `${item.cloud}`;  
-        
+        console.log(2);
         
 }
-// for(const item of favouriteCity ){
-//     addCityWearther(item)
-// }
-addCity.addEventListener('submit',(e)=>{
-    e.preventDefault();
+
+function addCityInput(cityName){
     const serverUrl = 'http://api.openweathermap.org/data/2.5/weather';
-    let cityName = searchName.value;
+    
+    cityName = searchName.value;
     const apiKey = '778ffae0d51392358c4468ba67db913f'; 
     const url = `${serverUrl}?q=${cityName}&appid=${apiKey}&units=metric`;
      f(url)
      searchName.value = ''; 
+    setLastCity(cityName) 
      
+}
+addCity.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    addCityInput()
+   
+    
 })
 
-        const tabs = document.querySelectorAll('.tabheader_item'),
-        tabsContent = document.querySelectorAll('.wrapper-weather'),
-        tabsParent = document.querySelector('.weather-items');
+        
 
-    function hideTabContent() {
-        tabsContent.forEach(item => {
-            item.style.visibility = 'hidden';
-        });
-        tabsContent.forEach(item =>{
-            item.classList.remove = 'tabheader_item_active';
-        });
-        }
-    function showTabContent(i = 0) {
-        tabsContent[i].style.visibility = 'visible';
-        tabs[i].classList.add = 'tabheader_item_active';
-    }
-        hideTabContent();
-        showTabContent();
-        tabsParent.addEventListener('click',function(event){
-            const target = event.target;
-            if(target && target.classList.contains('tabheader_item')){
-                tabs.forEach((item,i) =>{
-                    if(target == item){
-                        hideTabContent();
-                        showTabContent(i);
-                    }
-                });
-            }
-        });
+
