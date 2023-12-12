@@ -87,7 +87,7 @@ function render(listLocation)  {
             render(listLocation);
     })  
     itemText.addEventListener('click', ()=>{
-        const serverUrl = 'http://api.openweathermap.org/data/2.5/weather';
+        const serverUrl = 'https://api.openweathermap.org/data/2.5/weather';
         let cityName = itemText.textContent;
         const apiKey = '778ffae0d51392358c4468ba67db913f'; 
         const url = `${serverUrl}?q=${cityName}&appid=${apiKey}&units=metric&lang={ru}`;
@@ -121,7 +121,7 @@ function addCityWearther(item){
 }
 
 function addCityInput(cityName){
-    const serverUrl = 'http://api.openweathermap.org/data/2.5/weather';
+    const serverUrl = 'https://api.openweathermap.org/data/2.5/weather';
     
     cityName = searchName.value;
     const apiKey = '778ffae0d51392358c4468ba67db913f'; 
