@@ -8,8 +8,8 @@ function getLastCity() {
 function setterStorage(locations) {
     localStorage.setItem('favouriteCity',JSON.stringify(locations))
 }
-function getLocationFromStorage() {
-    return JSON.parse(localStorage.getItem('favouriteCity')) || [];
+function getLocationFromStorage() { 
+    return JSON.parse(localStorage.getItem('favouriteCity'));
 }
 
-export{setLastCity,getLastCity,setterStorage,getLocationFromStorage}
+export{setLastCity,getLastCity,getLocationFromStorage,setterStorage}
